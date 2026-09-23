@@ -1,0 +1,43 @@
+Last Updated on January 17, 2025 by Ashok Kumar
+
+With increasingly more employees working from home and other remote locations, the demand for more granular context-based authentication mechanisms has also increased. Multi-factor authentication (MFA) provides an additional layer of security to your logins and should be use whenever possible. That said, the downside of Multi-factor authentication is that it adds friction to the authentication process, which many companies would like to avoid. As opposed to asking all users to login using MFA, what if we could enforce MFA only when certain conditions are met? The good news is, we can!
+
+What is Azure AD Conditional Access
+
+Azure AD Conditional Access is a set of policies that are enforced following a successful login attempt. The purpose of these policies is to help you fine-tune your authentication process in order to improve security and meet compliance requirements. Conditional access policies can be used to identify and respond to the following conditions;
+
+The authentication protocol used when requesting access;
+
+The role/department of the user requesting access;
+
+The device, operating system and web browser used when requesting access;
+
+IP address information, including the use of VPN or Tor;
+
+The time and location of the user requesting access, etc.
+
+For example, if the user logs on to the network from a suspicious location or using an unrecognised device, or if they login during hours that are unusual for a given role, you can automatically deny them access to the network and alert the administrator who can investigate the incident. If you don’t want to deny the user access, you can ask them to provide an additional verification method, such as a passcode sent to their device, a fingerprint scan, or a dongle. Using a combination of policies will allow you to be as specific as you need in order to prevent unauthorized access to your Azure AD environment.
+
+How do Conditional Access Policies Work
+
+Conditional access policies are essentially if-then statements, similar to what you would find in most programming languages. For example, IF an authentication attempt meets a certain criteria, THEN enforce the policy. Azure AD uses real-time risk intelligence data from Azure AD Identity Protection and Microsoft Defender for Cloud to determine what conditions should be met, and to determine the threat level associated with each login attempt.
+
+Creating Conditional Access Policies in Azure AD
+
+On the Azure AD Conditional Access page, you can create a new policy, where you can specify the name of the policy, the users or workload identities, cloud apps or actions, conditions, access controls, and more. You can include/exclude specific users, groups and roles, as well as manage policies for guests and external users. You can also assign the policy to a single application, a group of applications, or all applications in your Azure AD environment. Once you have specified the conditions and clicked on the “Create” button, the policy will come into effect.
+
+Monitor Changes to Your Azure AD Tenant
+
+Having greater control over how your network is accessed can significantly bolster your security posture. However, there are no fool-proof methods that will keep your privileged accounts secure.
+
+For example, what would happen if an employee were to gain access to the Azure AD portal and make unauthorised changes to the conditional access policies?
+
+Having visibility into how these policies are created, accessed, updated, and removed, will give you reassurance that your policies are working as expected.
+
+The Lepide Azure AD Auditor will track all changes to your conditional access policies, and present all changes via a single dashboard. Here you can see exactly who, what, where and when, important changes are being made.
+
+The Lepide Azure AD Auditor can also detect and respond to events that match a pre-defined threshold condition, such as multiple failed logon attempts, which would suggest that an attacker is trying to brute-force-guess the account password. It can also deliver real-time alerts to your inbox or mobile app, and provide a detailed set of reports that can be used to satisfy the compliance requirements relevant to your industry.
+
+If you’d like to see how the Lepide Data Security Platform can audit Azure AD conditional access, schedule a demo with one of our engineers.
+
+Danny brings over 10 years’ experience in the IT industry to our Leadership team. With award winning success in leading global Pre-Sales and Support teams, coupled with his knowledge and enthusiasm for IT Security solutions, he is here to ensure we deliver market leading products and support to our extensively growing customer base

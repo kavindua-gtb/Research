@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.pyc
+
+# Cloned reference corpus (nested git repo, ~4.2GB) and its generated embeddings/
+# chunks -- regenerable via process_corpus.py, not meant to live in this repo.
+corpus/
+corpus_chunks.jsonl
+corpus_embeddings.npy

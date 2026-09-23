@@ -1,0 +1,12 @@
+Test articles for the Knowledge Decay pipeline
+================================================
+
+https://www.lepide.com/blog/what-is-azure-ad-conditional-access/
+  Blocked by site (403 from our fetcher's User-Agent) -- use pasted text instead.
+  See lepide_article.txt saved alongside this file for the article text.
+
+https://blog.quest.com/azure-ad-conditional-access-what-is-it-do-we-need-it/
+  Works. ~33 months old, heavy terminology drift.
+
+https://www.geeksforgeeks.org/cloud-computing/azure-ad-conditional-access-policies-explained/
+  Works. Mixed / partially-updated terminology, ~13 months old.
