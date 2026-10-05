@@ -1,12 +1,14 @@
 """Semantic similarity signal: how closely an article matches the current corpus.
 
 Each article paragraph is embedded (same model and chunking as the corpus) and
-matched to its nearest corpus chunk by cosine similarity. The article's score is
-the mean of those best-match similarities: low similarity = content has drifted
-from current documentation = high decay.
+matched to its nearest corpus chunk by cosine similarity, using an exact FAISS
+inner-product index (IndexFlatIP) over the stored, unit-normalised corpus
+embeddings. The article's score is the mean of those best-match similarities:
+low similarity = content has drifted from current documentation = high decay.
 """
 import json
 
+import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -20,13 +22,21 @@ _state = {}
 
 
 def _load():
-    """Load model, corpus embeddings and chunk metadata once."""
+    """Load the model and chunk metadata, and build the FAISS index, once.
+
+    The index lives only in memory; nothing new is written to disk. Inner
+    product on unit vectors is cosine similarity, so IndexFlatIP gives the same
+    exact search as a dot product against the full embedding matrix.
+    """
     if not _state:
         _state["model"] = SentenceTransformer(MODEL_NAME)
-        _state["embeddings"] = np.load(EMBEDDINGS_PATH)
+        embeddings = np.ascontiguousarray(np.load(EMBEDDINGS_PATH), dtype="float32")
+        index = faiss.IndexFlatIP(embeddings.shape[1])
+        index.add(embeddings)
+        _state["index"] = index
         with open(CHUNKS_PATH, "r", encoding="utf-8") as f:
             _state["chunks"] = [json.loads(line) for line in f]
-        assert len(_state["chunks"]) == len(_state["embeddings"])
+        assert len(_state["chunks"]) == index.ntotal
     return _state
 
 
@@ -43,9 +53,9 @@ def compute_semantic_similarity(text):
         return {"similarity": "not_applicable", "paragraphs": 0, "best_matches": []}
 
     q = s["model"].encode(paragraphs, normalize_embeddings=True, show_progress_bar=False)
-    sims = np.asarray(q, dtype="float32") @ s["embeddings"].T  # cosine (unit vectors)
-    best_idx = sims.argmax(axis=1)
-    best = sims[np.arange(len(paragraphs)), best_idx]
+    q = np.ascontiguousarray(q, dtype="float32")
+    sims, idx = s["index"].search(q, 1)  # cosine (unit vectors), best match only
+    best, best_idx = sims[:, 0], idx[:, 0]
 
     matches = [
         {"paragraph": paragraphs[i][:80], "similarity": float(best[i]),
