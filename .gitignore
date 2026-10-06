@@ -7,3 +7,9 @@ __pycache__/
 corpus/
 corpus_chunks.jsonl
 corpus_embeddings.npy
+
+# Third-party article text (copyrighted; kept locally for testing only).
+lepide_article.txt
+scratch_article.txt
+# FAISS equivalence-check results include 80-char article paragraph snippets.
+faiss_check_*.json
