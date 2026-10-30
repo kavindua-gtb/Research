@@ -13,3 +13,10 @@ lepide_article.txt
 scratch_article.txt
 # FAISS equivalence-check results include 80-char article paragraph snippets.
 faiss_check_*.json
+
+# Evaluation material containing third-party article text (copyrighted, kept locally only)
+texts/
+snapshots/
+eval_output/
+eval_output.zip
+backup_before_timeout_fix/

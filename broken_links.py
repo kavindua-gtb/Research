@@ -23,10 +23,18 @@ def extract_urls(text):
     return urls
 
 
+def _is_timeout(exc):
+    """True if the error is a timeout (a slow server, not proof of a dead page)."""
+    if isinstance(exc, TimeoutError):  # socket.timeout is the same class in Python 3.10+
+        return True
+    return isinstance(exc, urllib.error.URLError) and isinstance(exc.reason, TimeoutError)
+
+
 def check_url(url, timeout=10):
     """Return (status, detail).
 
-    status is "ok" (final 2xx), "inconclusive" (403/429) or "broken" (anything else).
+    status is "ok" (final 2xx), "inconclusive" (403, 429 or a timeout) or
+    "broken" (anything else).
     """
     req = urllib.request.Request(url, headers=_HEADERS)
     try:
@@ -38,14 +46,16 @@ def check_url(url, timeout=10):
     except urllib.error.HTTPError as e:
         code = str(e.code)
         return ("inconclusive" if code in _INCONCLUSIVE_STATUSES else "broken"), code
-    except Exception as e:  # DNS failure, timeout, SSL error, etc.
-        return "broken", f"{type(e).__name__}: {e}"
+    except Exception as e:
+        if _is_timeout(e):  # slow server: say nothing about whether the page exists
+            return "inconclusive", f"{type(e).__name__}: {e}"
+        return "broken", f"{type(e).__name__}: {e}"  # DNS failure, SSL error, etc.
 
 
 def check_broken_links(text=None, timeout=10, urls=None):
     """Return {'total', 'broken': [{url, reason}], 'inconclusive': [{url, reason}], 'score'}.
 
-    Inconclusive links (403/429) are excluded from both the broken count and total.
+    Inconclusive links (403, 429 or a timeout) are excluded from both the broken count and total.
     total = links checked conclusively; score = broken / total
     (0.0 = all good, 1.0 = all broken). If there are no URLs at all, or every URL
     was inconclusive (so nothing was determined), score is "not_applicable".
